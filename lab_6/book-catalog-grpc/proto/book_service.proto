@@ -1,0 +1,121 @@
+syntax = "proto3";
+
+package bookservice;
+
+option go_package = "book-catalog-grpc/proto";
+
+// Import Book từ book.proto
+import "proto/book.proto";
+
+message GetBookRequest {
+  int32 id = 1;
+}
+
+message GetBookResponse {
+  bookstore.Book book = 1;
+}
+
+message CreateBookRequest {
+  string title = 1;
+  string author = 2;
+  string isbn = 3;
+  float price = 4;
+  int32 stock = 5;
+  int32 published_year = 6;
+  int32 author_id = 7;  // Foreign key to Author
+}
+
+message CreateBookResponse {
+  bookstore.Book book = 1;
+}
+
+message UpdateBookRequest {
+  int32 id = 1;
+  string title = 2;
+  string author = 3;
+  string isbn = 4;
+  float price = 5;
+  int32 stock = 6;
+  int32 published_year = 7;
+  int32 author_id = 8;  // Foreign key to Author
+}
+
+message UpdateBookResponse {
+  bookstore.Book book = 1;
+}
+
+message DeleteBookRequest {
+  int32 id = 1;
+}
+
+message DeleteBookResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ListBooksRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+}
+
+message ListBooksResponse {
+  repeated bookstore.Book books = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message SearchBooksRequest {
+  string query = 1;
+  string field = 2;  // "title", "author", "isbn", or "all"
+}
+
+message SearchBooksResponse {
+  repeated bookstore.Book books = 1;
+  int32 count = 2;
+  string query = 3;
+}
+
+message FilterBooksRequest {
+  float min_price = 1;
+  float max_price = 2;
+  int32 min_year = 3;
+  int32 max_year = 4;
+}
+
+message FilterBooksResponse {
+  repeated bookstore.Book books = 1;
+  int32 count = 2;
+}
+
+message GetStatsRequest {
+}
+
+message GetStatsResponse {
+  int32 total_books = 1;
+  float average_price = 2;
+  int32 total_stock = 3;
+  int32 earliest_year = 4;
+  int32 latest_year = 5;
+}
+
+message GetBooksByAuthorRequest {
+  int32 author_id = 1;
+}
+
+message GetBooksByAuthorResponse {
+  repeated bookstore.Book books = 1;
+  int32 count = 2;
+}
+
+service BookCatalog {
+  rpc GetBook(GetBookRequest) returns (GetBookResponse);
+  rpc CreateBook(CreateBookRequest) returns (CreateBookResponse);
+  rpc UpdateBook(UpdateBookRequest) returns (UpdateBookResponse);
+  rpc DeleteBook(DeleteBookRequest) returns (DeleteBookResponse);
+  rpc ListBooks(ListBooksRequest) returns (ListBooksResponse);
+  rpc SearchBooks(SearchBooksRequest) returns (SearchBooksResponse);
+  rpc FilterBooks(FilterBooksRequest) returns (FilterBooksResponse);
+  rpc GetStats(GetStatsRequest) returns (GetStatsResponse);
+  rpc GetBooksByAuthor(GetBooksByAuthorRequest) returns (GetBooksByAuthorResponse);
+}
